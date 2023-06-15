@@ -9,7 +9,6 @@ from gtts import gTTS
 
 from keyboards.inline.choice_buttons import main, keyboard_open, language, main_admin
 from loader import bot, dp
-from utils.connect_db import cursor_obj, con
 from utils.db_functions import add_users
 
 subscriptions = {
@@ -73,7 +72,7 @@ async def convert_to(message: types.Message):
                 reply_markup=keyboard_open)
             return
 
-        await message.answer("Перейти к конвертации: ", reply_markup=language)
+    await message.answer("Перейти к конвертации: ", reply_markup=language)
 
 
 @dp.callback_query_handler(lambda query: query.data == 'rules')
