@@ -9,7 +9,7 @@ from gtts import gTTS
 
 from keyboards.inline.choice_buttons import main, keyboard_open, language, main_admin
 from loader import bot, dp
-from utils.db_functions import add_users
+from utils.db_functions import add_users, add_users_func
 
 subscriptions = {
     'channel2': "@dsfgbmnjmlhj"
@@ -42,10 +42,10 @@ ADMIN_ID = json.loads(os.getenv('ADMIN_ID'))
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    # user_id = message.from_user.id
-    # username = message.from_user.username
-    #
-    # await add_users(user_id, username)
+    user_id = message.from_user.id
+    username = message.from_user.username
+
+    await add_users(user_id, username)
 
     await message.reply("👋🏻 Привет!\n\n🖥 С помощью этого бота вы можете конвертировать текст в голосовое сообщение\n", reply_markup=main)
 
@@ -55,6 +55,10 @@ async def send_welcome(message: types.Message):
 
 @dp.message_handler(text="🗣Хочу голосовое сообщение!")
 async def convert_to(message: types.Message):
+    user_id = message.from_user.id
+    username = message.from_user.username
+
+    await add_users_func(user_id, username, used_voice=True)
     await bot.send_message(message.chat.id, 'Напишите любой текст, а я его сконвертирую в голосовое сообщение')
 
     @dp.message_handler()
@@ -68,7 +72,12 @@ async def convert_to(message: types.Message):
 
         if not is_subbed:
             await message.reply(
-                "Для того, чтобы получить голосовое сообщение тебе нужно подписаться на каналы ниже и просмотреть 10 первых постов. Это наши спонсоры и без них наш проект бы не существовал бесплатно. Без подписки эмодзи не будут отправлены. Прочитай правила!!!\nhttps://t.me/audio_26kadr_bot\nhttps://t.me/audio_26kadr_bot\nhttps://t.me/audio_26kadr_bot\n Если отписаться, бот может не работать ",
+                "Для того, чтобы получить голосовое сообщение тебе нужно подписаться на каналы ниже и просмотреть 10 первых постов."
+                " Это наши спонсоры и без них наш проект бы не существовал бесплатно."
+                " Без подписки эмодзи не будут отправлены. Прочитай правила!!!"
+                "\nhttps://t.me/audio_26kadr_bot\nhttps://t.me/audio_26kadr_bot"
+                "\nhttps://t.me/audio_26kadr_bot\n "
+                "Если отписаться, бот может не работать ",
                 reply_markup=keyboard_open)
             return
 
@@ -88,6 +97,7 @@ async def convert_to_ru(message: types.Message):
 
     @dp.message_handler()
     async def handle_user_text(message: types.Message):
+        print('Starting to convert...')
         await bot.send_message(message.chat.id, 'Начинаю конвертировать...')
         voice = converter_text_to_voice(message.text)
         await bot.send_voice(message.from_user.id, voice)
@@ -99,6 +109,7 @@ async def convert_to_en(message: types.Message):
 
     @dp.message_handler()
     async def handle_user_text(message: types.Message):
+        print('Starting to convert...')
         await bot.send_message(message.chat.id, 'Starting to convert...')
         voice = converter_text_to_voice_en(message.text)
         await bot.send_voice(message.from_user.id, voice)

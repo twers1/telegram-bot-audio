@@ -6,6 +6,7 @@ from keyboards.inline.choice_buttons import admin_panel, quit_button
 from loader import dp, bot
 from aiogram import types
 
+from utils.db_functions import get_users_count, get_users_count_func, get_inactive_users_count
 
 ADMIN_ID = json.loads(os.getenv('ADMIN_ID'))
 
@@ -19,10 +20,13 @@ async def contacts(message: types.Message):
 
 @dp.message_handler(text="👱‍♂️Посмотреть статистику")
 async def statistics(message: types.Message):
+    users_count = await get_users_count()
+    users_count_func = await get_users_count_func()
+    inactive_users_count = await get_inactive_users_count()
     await bot.send_message(message.chat.id, f'Статистика бота: ')
-    await bot.send_message(message.chat.id, f'Количество пользователей, которые на start: \n\n'
-                                            f'Количество пользователей, которые пользовались функционалом отправки голосовых сообщений: \n\n'
-                                            f'Количество пользователей, которые выключили бота: \n\n'
+    await bot.send_message(message.chat.id, f'Количество пользователей, которые на start: {users_count}\n\n'
+                                            f'Количество пользователей, которые пользовались функционалом отправки голосовых сообщений: {users_count_func}\n\n'
+                                            f'Количество пользователей, которые выключили бота: {inactive_users_count}\n\n'
                                             f'Количество пользователей, которые удалились из телеграмма: ', reply_markup=quit_button)
 
 
