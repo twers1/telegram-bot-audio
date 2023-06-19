@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from utils.connect_db import con, cursor_obj
 
 
@@ -9,20 +11,23 @@ async def create_table():
     username TEXT,
     subscribers INT,
     used_voice BOOLEAN,
+    last_activity TIMESTAMP,
+    start_time TIMESTAMP,
     id INT GENERATED ALWAYS AS IDENTITY);""")
 
     con.commit()
 
 
-async def add_users(user_id, username):
-    # проверяем наличие пользователя в базе данных
-    cursor_obj.execute("""SELECT * FROM users WHERE user_id = %s""", (user_id,))
-    existing_user = cursor_obj.fetchone()
+async def add_users(user_id, username, start_time):
+    # если пользователя нет в базе данных, добавляем его
+    cursor_obj.execute("""
+               INSERT INTO users (user_id, username, start_time, last_activity)
+               VALUES (%s, %s, %s, %s)
+               ON CONFLICT (user_id) DO UPDATE
+               SET last_activity = EXCLUDED.last_activity;
+           """, (user_id, username, start_time, datetime.now()))
 
-    if not existing_user:
-        # если пользователя нет в базе данных, добавляем его
-        cursor_obj.execute("INSERT INTO users (user_id, username) VALUES (%s, %s)", (user_id, username))
-        con.commit()
+    con.commit()
 
 
 async def add_users_func(user_id, username, used_voice=False):
@@ -45,9 +50,9 @@ async def get_users():
     return cursor_obj.fetchall()
 
 
-async def remove_user_from_db(user_id):
-    cursor_obj.execute("DELETE FROM users WHERE user_id=%s", (user_id,))
-    con.commit()
+# async def remove_user_from_db(user_id):
+#     cursor_obj.execute("DELETE FROM users WHERE user_id=%s", (user_id,))
+#     con.commit()
 
 
 async def get_users_count():
@@ -57,16 +62,18 @@ async def get_users_count():
     return count
 
 
-async def get_users_count_func():
-    cursor_obj.execute("SELECT COUNT(*) FROM users WHERE used_voice = TRUE")
-    count = cursor_obj.fetchone()[0]
-    print(f"Количество пользователей, которые использовали функционал отправки голосовых сообщений: {count}")
-    return count
+# async def get_users_count_func():
+#     cursor_obj.execute("SELECT COUNT(*) FROM users WHERE used_voice = TRUE")
+#     count = cursor_obj.fetchone()[0]
+#     print(f"Количество пользователей, которые использовали функционал отправки голосовых сообщений: {count}")
+#     return count
 
 
 async def get_inactive_users_count():
     # Определяем период времени, в течение которого пользователь должен был быть активным, чтобы считаться активным
-    active_period = 30 # дни
+    active_period = 1 # дни
+    period = timedelta(hours=active_period)
+
 
     # Выбираем всех пользователей, которые были активны в течение последнего периода времени
     cursor_obj.execute("SELECT user_id FROM users WHERE last_activity >= NOW() - INTERVAL '%s days'", (active_period,))

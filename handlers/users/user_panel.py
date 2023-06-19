@@ -11,6 +11,8 @@ from keyboards.inline.choice_buttons import main, keyboard_open, language, main_
 from loader import bot, dp
 from utils.db_functions import add_users, add_users_func
 
+from datetime import datetime
+
 subscriptions = {
     'channel2': "@dsfgbmnjmlhj"
 }
@@ -44,8 +46,9 @@ ADMIN_ID = json.loads(os.getenv('ADMIN_ID'))
 async def send_welcome(message: types.Message):
     user_id = message.from_user.id
     username = message.from_user.username
+    start_time = datetime.now()
 
-    await add_users(user_id, username)
+    await add_users(user_id, username, start_time)
 
     await message.reply("👋🏻 Привет!\n\n🖥 С помощью этого бота вы можете конвертировать текст в голосовое сообщение\n", reply_markup=main)
 

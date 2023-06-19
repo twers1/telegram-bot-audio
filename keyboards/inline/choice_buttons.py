@@ -4,7 +4,7 @@ main = ReplyKeyboardMarkup(resize_keyboard=True)
 main.add(KeyboardButton('🗣Хочу голосовое сообщение!'))
 
 main_admin = ReplyKeyboardMarkup(resize_keyboard=True)
-main_admin.add(KeyboardButton('🗣Хочу голосовое сообщение!'), KeyboardButton('Админ-панель'))
+main_admin.add(KeyboardButton('🗣Хочу голосовое сообщение!'), KeyboardButton(text='Админ-панель'))
 
 admin_panel = ReplyKeyboardMarkup(resize_keyboard=True)
 admin_panel.add(KeyboardButton('👱‍♂️Посмотреть статистику'))
