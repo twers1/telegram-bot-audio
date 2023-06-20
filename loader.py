@@ -1,3 +1,6 @@
+import asyncio
+import os
+
 from aiogram import Bot, Dispatcher, types
 
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -5,5 +8,13 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 import config
 
 bot = Bot(config.TOKEN, parse_mode=types.ParseMode.HTML)
+bot2 = Bot(config.TOKEN2, parse_mode=types.ParseMode.HTML)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
+dp2 = Dispatcher(bot2, storage=storage)
+
+tokens = [
+    os.getenv('TOKEN'),
+    os.getenv('TOKEN2'),
+]
+

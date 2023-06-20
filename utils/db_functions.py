@@ -18,6 +18,20 @@ async def create_table():
     con.commit()
 
 
+async def create_table_link():
+    cursor_obj.execute("""CREATE TABLE IF NOT EXISTS links (
+    link TEXT,
+    id INT GENERATED ALWAYS AS IDENTITY);""")
+
+    con.commit()
+
+
+async def add_link_to_db(link):
+    cursor_obj.execute("INSERT INTO links (link) VALUES (%s)", (link,))
+
+    con.commit()
+
+
 async def add_users(user_id, username, start_time):
     # если пользователя нет в базе данных, добавляем его
     cursor_obj.execute("""

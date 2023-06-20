@@ -8,6 +8,8 @@ main_admin.add(KeyboardButton('🗣Хочу голосовое сообщени�
 
 admin_panel = ReplyKeyboardMarkup(resize_keyboard=True)
 admin_panel.add(KeyboardButton('👱‍♂️Посмотреть статистику'))
+admin_panel.add(KeyboardButton('🔗Добавить ссылку'))
+
 
 language = ReplyKeyboardMarkup(resize_keyboard=True)
 language.add(KeyboardButton(text='ru'), KeyboardButton(text='en'))
