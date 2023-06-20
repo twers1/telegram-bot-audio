@@ -32,6 +32,12 @@ async def add_link_to_db(link):
     con.commit()
 
 
+async def get_links():
+    cursor_obj.execute("""SELECT link from links;""")
+    links = cursor_obj.fetchall()
+    return [link[0] for link in links]
+
+
 async def add_users(user_id, username, start_time):
     # если пользователя нет в базе данных, добавляем его
     cursor_obj.execute("""
@@ -90,7 +96,7 @@ async def get_inactive_users_count():
 
 
     # Выбираем всех пользователей, которые были активны в течение последнего периода времени
-    cursor_obj.execute("SELECT user_id FROM users WHERE last_activity >= NOW() - INTERVAL '%s days'", (active_period,))
+    cursor_obj.execute("SELECT user_id FROM users WHERE last_activity >= NOW() - INTERVAL %s", (period,))
     active_users = set([row[0] for row in cursor_obj.fetchall()])
 
     # Получаем все ID пользователей из базы данных

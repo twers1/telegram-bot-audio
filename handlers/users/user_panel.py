@@ -9,7 +9,7 @@ from gtts import gTTS
 
 from keyboards.inline.choice_buttons import main, keyboard_open, language, main_admin
 from loader import bot, dp
-from utils.db_functions import add_users, add_users_func
+from utils.db_functions import add_users, add_users_func, get_links
 
 from datetime import datetime
 
@@ -23,7 +23,7 @@ async def is_user_subscribed(user_id: int, chat_id: str) -> bool:
     return member.is_chat_member() or member.is_chat_owner() or member.is_chat_admin() or member.is_chat_creator()
 
 
-def converter_text_to_voice(text: str) -> BytesIO:
+async def converter_text_to_voice(text: str) -> BytesIO:
     bytes_file = BytesIO()
     audio = gTTS(text=text, lang="ru")
     audio.write_to_fp(bytes_file)
@@ -31,7 +31,7 @@ def converter_text_to_voice(text: str) -> BytesIO:
     return bytes_file
 
 
-def converter_text_to_voice_en(text: str) -> BytesIO:
+async def converter_text_to_voice_en(text: str) -> BytesIO:
     bytes_file = BytesIO()
     audio = gTTS(text=text, lang="en")
     audio.write_to_fp(bytes_file)
@@ -62,10 +62,23 @@ async def convert_to(message: types.Message):
     username = message.from_user.username
 
     await add_users_func(user_id, username, used_voice=True)
-    await bot.send_message(message.chat.id, 'Напишите любой текст, а я его сконвертирую в голосовое сообщение')
+    await bot.send_message(message.chat.id, 'Выберите язык для конвертации', reply_markup=language)
 
     @dp.message_handler()
     async def get_text(message: types.Message):
+        if message.text == 'ru':
+            await bot.send_message(message.chat.id, 'Введите любой текст, а я конвертирую его в голосовое сообщение')
+            voice = await converter_text_to_voice(message.text)
+            print('Начинаю конвертировать...')
+            await bot.send_message(message.chat.id, 'Начинаю конвертировать...')
+            await bot.send_voice(message.from_user.id, voice)
+        elif message.text == 'en':
+            await bot.send_message(message.chat.id, 'Type any text and I will convert it into a voice message')
+            print('Starting convert en...')
+            await bot.send_message(message.chat.id, 'Starting convert...')
+            voice = converter_text_to_voice_en(message.text)
+            await bot.send_voice(message.from_user.id, voice)
+
         user_id = message.from_user.id
         is_subbed = False
         for group_id in subscriptions.values():
@@ -73,49 +86,27 @@ async def convert_to(message: types.Message):
                 is_subbed = True
                 break
 
+        links = await get_links()
+        result = '\n '.join(links)
+
         if not is_subbed:
             await message.reply(
-                "Для того, чтобы получить голосовое сообщение тебе нужно подписаться на каналы ниже и просмотреть 10 первых постов."
-                " Это наши спонсоры и без них наш проект бы не существовал бесплатно."
-                " Без подписки эмодзи не будут отправлены. Прочитай правила!!!"
-                "\nhttps://t.me/audio_26kadr_bot\nhttps://t.me/audio_26kadr_bot"
-                "\nhttps://t.me/audio_26kadr_bot\n "
-                "Если отписаться, бот может не работать ",
+                f"Для того, чтобы получить голосовое сообщение тебе нужно подписаться на каналы ниже и просмотреть 10 первых постов."
+                f" Это наши спонсоры и без них наш проект бы не существовал бесплатно."
+                f" Без подписки голосовые сообщения не будут отправлены. Прочитай правила!!!"
+                f"\nhttps://t.me/audio_26kadr_bot\nhttps://t.me/audio_26kadr_bot"
+                f"\nhttps://t.me/audio_26kadr_bot\n {result}"
+                f"Если отписаться, бот может не работать ",
                 reply_markup=keyboard_open)
             return
 
-    await message.answer("Перейти к конвертации: ", reply_markup=language)
+        # await message.answer("Перейти к конвертации: ", reply_markup=language)
 
 
 @dp.callback_query_handler(lambda query: query.data == 'rules')
 async def process_rules(callback_query: CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Здесь будут простые правила")
-
-
-@dp.message_handler(text="ru")
-async def convert_to_ru(message: types.Message):
-    print('Мы в конверт')
-    await message.answer('Введите любой текст, а я конвертирую его в голосовое сообщение')
-
-    @dp.message_handler()
-    async def handle_user_text(message: types.Message):
-        print('Starting to convert...')
-        await bot.send_message(message.chat.id, 'Начинаю конвертировать...')
-        voice = converter_text_to_voice(message.text)
-        await bot.send_voice(message.from_user.id, voice)
-
-
-@dp.message_handler(text="en")
-async def convert_to_en(message: types.Message):
-    await message.answer('Type any text and I will convert it into a voice message')
-
-    @dp.message_handler()
-    async def handle_user_text(message: types.Message):
-        print('Starting to convert...')
-        await bot.send_message(message.chat.id, 'Starting to convert...')
-        voice = converter_text_to_voice_en(message.text)
-        await bot.send_voice(message.from_user.id, voice)
 
 
 @dp.callback_query_handler(lambda query: query.data == 'check_subbed')
