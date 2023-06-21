@@ -29,8 +29,8 @@ async def statistics(message: types.Message):
     await bot2.send_message(message.chat.id, f'На момент последней проверки: *{datetime.now()}* в боте:\n'
                                             f'Живые: {users_count}\n'
                                             f'Мертвые: {inactive_users_count}\n'
-                                            f'Суммарно проверено: \n'
-                                            f'На текущий момент, в боте: *пока не знаю*', reply_markup=quit_button,
+                                            f'Суммарно проверено: {users_count}\n'
+                                            f'На текущий момент, в боте: *{users_count}*', reply_markup=quit_button,
                                             parse_mode='Markdown')
 
 

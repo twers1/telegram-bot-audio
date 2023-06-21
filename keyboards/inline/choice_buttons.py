@@ -11,8 +11,8 @@ admin_panel.add(KeyboardButton('👱‍♂️Посмотреть статист
 admin_panel.add(KeyboardButton('🔗Добавить ссылку'))
 
 
-language = ReplyKeyboardMarkup(resize_keyboard=True)
-language.add(KeyboardButton(text='ru'), KeyboardButton(text='en'))
+# language = ReplyKeyboardMarkup(resize_keyboard=True)
+# language.add(KeyboardButton(text='ru'))
 
 subscribe_to_channels0 = InlineKeyboardButton("Правила", callback_data="rules")
 subscribe_to_channels1 = InlineKeyboardButton("Наш канал", url="https://t.me/dsfgbmnjmlhj")

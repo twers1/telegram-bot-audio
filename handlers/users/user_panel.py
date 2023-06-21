@@ -7,7 +7,7 @@ from aiogram.types import CallbackQuery
 
 from gtts import gTTS
 
-from keyboards.inline.choice_buttons import main, keyboard_open, language, main_admin
+from keyboards.inline.choice_buttons import main, keyboard_open, main_admin
 from loader import bot, dp
 from utils.db_functions import add_users, add_users_func, get_links
 
@@ -56,28 +56,28 @@ async def send_welcome(message: types.Message):
         await message.answer(f'Вы авторизовались как администратор', reply_markup=main_admin)
 
 
-@dp.message_handler(text="🗣Хочу голосовое сообщение!")
-async def convert_to(message: types.Message):
-    user_id = message.from_user.id
-    username = message.from_user.username
+    @dp.message_handler(text="🗣Хочу голосовое сообщение!")
+    async def convert_to(message: types.Message):
+        user_id = message.from_user.id
+        username = message.from_user.username
 
-    await add_users_func(user_id, username, used_voice=True)
-    await bot.send_message(message.chat.id, 'Выберите язык для конвертации', reply_markup=language)
+        await add_users_func(user_id, username, used_voice=True)
+        await bot.send_message(message.chat.id, 'Погнали получать голосовое сообщение\nВведите любой текст')
 
-    @dp.message_handler()
-    async def get_text(message: types.Message):
-        if message.text == 'ru':
-            await bot.send_message(message.chat.id, 'Введите любой текст, а я конвертирую его в голосовое сообщение')
-            voice = await converter_text_to_voice(message.text)
-            print('Начинаю конвертировать...')
-            await bot.send_message(message.chat.id, 'Начинаю конвертировать...')
-            await bot.send_voice(message.from_user.id, voice)
-        elif message.text == 'en':
-            await bot.send_message(message.chat.id, 'Type any text and I will convert it into a voice message')
-            print('Starting convert en...')
-            await bot.send_message(message.chat.id, 'Starting convert...')
-            voice = converter_text_to_voice_en(message.text)
-            await bot.send_voice(message.from_user.id, voice)
+        @dp.message_handler()
+        async def get_text(message: types.Message):
+            user_text = message.text
+            if message.text == user_text:
+                await bot.send_message(message.chat.id, 'Начинаю конвертировать...')
+                voice = await converter_text_to_voice(user_text)
+                print('Начинаю конвертировать...')
+                await bot.send_voice(message.from_user.id, voice)
+        # elif message.text == 'en':
+        #     await bot.send_message(message.chat.id, 'Type any text and I will convert it into a voice message')
+        #     print('Starting convert en...')
+        #     await bot.send_message(message.chat.id, 'Starting convert...')
+        #     voice = converter_text_to_voice_en(user_text)
+        #     await bot.send_voice(message.from_user.id, voice)
 
         user_id = message.from_user.id
         is_subbed = False
