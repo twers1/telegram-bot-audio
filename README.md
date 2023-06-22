@@ -28,6 +28,14 @@ python3 main.py
 
 # Бот, занимающийся конвертацией текста в голосовое сообщение
 
+## Как установить бота
+
+```commandline
+python3 pip install -r requirements.txt
+
+python3 main.py 
+```
+
 ## Функции 
 
 - конвертация текста в голосовое сообщение 
