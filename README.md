@@ -22,7 +22,7 @@ python3 main.py
 
 ## Demo
 
-[](https://github.com/twers1/telegram-bot-audio/blob/main/readfiles/demov1.gif)
+![](https://github.com/twers1/telegram-bot-audio/blob/main/readfiles/demov1.gif)
 
 
 
@@ -43,4 +43,4 @@ python3 main.py
 
 ## Демонстрация 
 
-[](https://github.com/twers1/telegram-bot-audio/blob/main/readfiles/demov1.gif)
+![](https://github.com/twers1/telegram-bot-audio/blob/main/readfiles/demov1.gif)
