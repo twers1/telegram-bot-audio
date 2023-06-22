@@ -1,5 +1,13 @@
 # A bot that converts text into a voice message
 
+## How to install? 
+
+```
+python3 pip install -r requirements.txt
+
+python3 main.py 
+```
+
 ## Functions 
 
 - converting text into a voice message 
@@ -11,6 +19,12 @@
 
 - Python. Aiogram
 - PostgreSQL
+
+## Demo
+
+[]()
+
+
 
 # Бот, занимающийся конвертацией текста в голосовое сообщение
 
@@ -26,3 +40,7 @@
 - Python. Aiogram
 - PostreSQL
 
+
+## Демонстрация 
+
+[]()

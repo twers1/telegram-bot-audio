@@ -89,10 +89,24 @@ async def get_users_count():
 #     return count
 
 
+async def get_live_users():
+    # Определяем период времени, в течение которого пользователь должен был быть активным, чтобы считаться активным
+    active_period = 1  # дни
+
+    # Выбираем всех пользователей, которые были активны в течение последнего периода времени
+    cursor_obj.execute("SELECT user_id FROM users WHERE last_activity >= (NOW() - INTERVAL '%s DAY')", (active_period,))
+    active_users = set([row[0] for row in cursor_obj.fetchall()])
+
+    # Считаем количество пользователей, которые были активны в течение предыдущего периода времени
+    live_users = len(active_users)
+    print(f"Количество пользователей, которые сейчас в боте: {live_users}")
+    return live_users
+
+
 async def get_inactive_users_count():
     # Определяем период времени, в течение которого пользователь должен был быть активным, чтобы считаться активным
     active_period = 1 # дни
-    period = timedelta(hours=active_period)
+    period = timedelta(days=active_period)
 
 
     # Выбираем всех пользователей, которые были активны в течение последнего периода времени
@@ -109,6 +123,21 @@ async def get_inactive_users_count():
 
     print(f"Количество пользователей, которые выключили вашего бота: {count}")
     return count
+
+
+async def get_users_current_time():
+    # Определяем период времени, в течение которого пользователь должен был быть активным, чтобы считаться активным
+    active_period = 15  # минуты
+
+    # Выбираем всех пользователей, которые были активны в течение последнего периода времени
+    cursor_obj.execute("SELECT user_id FROM users WHERE last_activity >= (NOW() - INTERVAL '%s MINUTE')", (active_period,))
+    active_users = set([row[0] for row in cursor_obj.fetchall()])
+
+    # Считаем количество пользователей, которые были активны в течение последних 15 минут
+    current_users = len(active_users)
+    print(f"Количество пользователей, которые сейчас в боте(15 min): {current_users}")
+    return current_users
+
 
 
 

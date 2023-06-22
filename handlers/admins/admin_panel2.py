@@ -10,11 +10,14 @@ from loader import bot2, dp2
 from aiogram import types
 
 from states import Links
-from utils.db_functions import get_users_count, get_inactive_users_count, add_link_to_db
+from utils.db_functions import get_users_count, get_inactive_users_count, add_link_to_db, get_live_users, \
+    get_users_current_time
 
+# Загружает данные с env переменной в json
 ADMIN_ID = json.loads(os.getenv('ADMIN_ID'))
 
 
+# При нажатии /start
 @dp2.message_handler(commands='start')
 async def cmd_start(message: types.Message):
     print('Мы во втором боте')
@@ -22,15 +25,18 @@ async def cmd_start(message: types.Message):
         await bot2.send_message(message.from_user.id, f'Вы успешно зашли в админ-панель', reply_markup=admin_panel)
 
 
+# Кнопка "Посмотреть статистику", показывающая сколько живых, мертвых, суммарно проверено и сколько на текущий момент в боте человек
 @dp2.message_handler(text="👱‍♂️Посмотреть статистику")
 async def statistics(message: types.Message):
     users_count = await get_users_count()
     inactive_users_count = await get_inactive_users_count()
+    get_users_live = await get_live_users()
+    get_users_cur_time = await get_users_current_time()
     await bot2.send_message(message.chat.id, f'На момент последней проверки: *{datetime.now()}* в боте:\n'
-                                            f'Живые: {users_count}\n'
+                                            f'Живые: {get_users_live}\n'
                                             f'Мертвые: {inactive_users_count}\n'
                                             f'Суммарно проверено: {users_count}\n'
-                                            f'На текущий момент, в боте: *{users_count}*', reply_markup=quit_button,
+                                            f'На текущий момент, в боте: *{get_users_cur_time}*', reply_markup=quit_button,
                                             parse_mode='Markdown')
 
 

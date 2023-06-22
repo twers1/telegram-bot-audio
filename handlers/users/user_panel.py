@@ -14,16 +14,19 @@ from utils.db_functions import add_users, add_users_func, get_links
 
 from datetime import datetime
 
+# Список каналов, на которых нужно подписаться
 subscriptions = {
     'channel2': "@dsfgbmnjmlhj"
 }
 
 
+# Функция, проверяющая подписку пользователя
 async def is_user_subscribed(user_id: int, chat_id: str) -> bool:
     member = await bot.get_chat_member(chat_id, user_id)
     return member.is_chat_member() or member.is_chat_owner() or member.is_chat_admin() or member.is_chat_creator()
 
 
+# Функция, которая конвертирует текст в голосовое сообщение
 async def converter_text_to_voice(text: str) -> BytesIO:
     bytes_file = BytesIO()
     audio = gTTS(text=text, lang="ru")
@@ -32,6 +35,7 @@ async def converter_text_to_voice(text: str) -> BytesIO:
     return bytes_file
 
 
+# Функция, которая конвертирует текст, который написан на английском языке в голосовое сообщение
 async def converter_text_to_voice_en(text: str) -> BytesIO:
     bytes_file = BytesIO()
     audio = gTTS(text=text, lang="en")
@@ -40,9 +44,11 @@ async def converter_text_to_voice_en(text: str) -> BytesIO:
     return bytes_file
 
 
+# Загружает данные с env переменной в json
 ADMIN_ID = json.loads(os.getenv('ADMIN_ID'))
 
 
+# При нажатии /start - будет выводиться данная функция
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     user_id = message.from_user.id
@@ -57,6 +63,7 @@ async def send_welcome(message: types.Message):
         await message.answer(f'Вы авторизовались как администратор', reply_markup=main_admin)
 
 
+# Кнопка "Хочу голосовое сообщение". Там проверяется подписан ли человек на каналы и уже присылает голосовые сообщения
 @dp.message_handler(text="🗣Хочу голосовое сообщение!")
 async def convert_to(message: types.Message):
     user_id = message.from_user.id
@@ -94,7 +101,6 @@ async def convert_to(message: types.Message):
             )
 
             await bot.send_voice(message.from_user.id, voice)
-            await bot.send_voice(message.from_user.id, voice)
         # elif message.text == 'en':
         #     await bot.send_message(message.chat.id, 'Type any text and I will convert it into a voice message')
         #     print('Starting convert en...')
@@ -126,12 +132,14 @@ async def convert_to(message: types.Message):
         # await message.answer("Перейти к конвертации: ", reply_markup=language)
 
 
+# Кнопка "Правила"
 @dp.callback_query_handler(lambda query: query.data == 'rules')
 async def process_rules(callback_query: CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Здесь будут простые правила")
 
 
+# Кнопка "Проверка подписки"
 @dp.callback_query_handler(lambda query: query.data == 'check_subbed')
 async def check_subscribed(callback_query: CallbackQuery):
     user_id = callback_query.from_user.id
