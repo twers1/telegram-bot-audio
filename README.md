@@ -1,6 +1,6 @@
 # A bot that converts text into a voice message
 
-## How to install? 
+## How to install and start? 
 
 ```
 python3 pip install -r requirements.txt
@@ -28,7 +28,7 @@ python3 main.py
 
 # Бот, занимающийся конвертацией текста в голосовое сообщение
 
-## Как установить бота
+## Как установить и запустить бота?
 
 ```commandline
 python3 pip install -r requirements.txt
@@ -52,3 +52,9 @@ python3 main.py
 ## Демонстрация 
 
 ![](https://github.com/twers1/telegram-bot-audio/blob/main/readfiles/demov1.gif)
+
+## Docker. 
+
+```commandline
+
+```
