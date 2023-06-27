@@ -75,32 +75,6 @@ async def convert_to(message: types.Message):
     @dp.message_handler()
     async def get_text(message: types.Message):
         user_text = message.text
-        if message.text == user_text:
-            await bot.send_message(message.chat.id, 'Начинаю конвертировать...')
-            voice = await converter_text_to_voice(user_text)
-            print('Начинаю конвертировать...')
-            # старт
-            conversion_message = await bot.send_message(message.chat.id, "⏳ Начало конвертации...")
-
-            for i in range(10):
-                progress_bar = '🟩' * i + '⬜️' * (10 - i)
-                await bot.edit_message_text(
-                    chat_id=message.chat.id,
-                    message_id=conversion_message.message_id,
-                    text=f"Прогресс конвертации: \n{progress_bar} {i * 10}%"
-                )
-                await asyncio.sleep(0.5)  # задержка
-
-            voice = await converter_text_to_voice(user_text)
-
-            # окончания
-            await bot.edit_message_text(
-                chat_id=message.chat.id,
-                message_id=conversion_message.message_id,
-                text="✅ Конвертация завершена!"
-            )
-
-            await bot.send_voice(message.from_user.id, voice)
         # elif message.text == 'en':
         #     await bot.send_message(message.chat.id, 'Type any text and I will convert it into a voice message')
         #     print('Starting convert en...')
@@ -128,6 +102,32 @@ async def convert_to(message: types.Message):
                 f"Если отписаться, бот может не работать ",
                 reply_markup=keyboard_open)
             return
+        if message.text == user_text:
+            await bot.send_message(message.chat.id, 'Начинаю конвертировать...')
+            voice = await converter_text_to_voice(user_text)
+            print('Начинаю конвертировать...')
+            # старт
+            conversion_message = await bot.send_message(message.chat.id, "⏳ Начало конвертации...")
+
+            for i in range(10):
+                progress_bar = '🟩' * i + '⬜️' * (10 - i)
+                await bot.edit_message_text(
+                    chat_id=message.chat.id,
+                    message_id=conversion_message.message_id,
+                    text=f"Прогресс конвертации: \n{progress_bar} {i * 10}%"
+                )
+                await asyncio.sleep(0.5)  # задержка
+
+            voice = await converter_text_to_voice(user_text)
+
+            # окончания
+            await bot.edit_message_text(
+                chat_id=message.chat.id,
+                message_id=conversion_message.message_id,
+                text="✅ Конвертация завершена!"
+            )
+
+            await bot.send_voice(message.from_user.id, voice)
 
         # await message.answer("Перейти к конвертации: ", reply_markup=language)
 

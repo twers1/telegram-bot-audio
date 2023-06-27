@@ -22,7 +22,24 @@ python3 main.py
 
 ## Demo
 
+User panel: 
+
 ![](https://github.com/twers1/telegram-bot-audio/blob/main/readfiles/demov1.gif)
+
+Admin panel: 
+
+<img src="readfiles/img.png" width="300px">
+<img src="readfiles/img_1.png" width="300px">
+
+## Docker
+
+```
+docker build -t bot .
+
+docker run -e TOKEN= -e TOKEN2=  -e ADMIN_ID= -e DB_URI= bot
+
+docker-compose up
+```
 
 
 
@@ -51,10 +68,21 @@ python3 main.py
 
 ## Демонстрация 
 
+Панель пользователя: 
+
 ![](https://github.com/twers1/telegram-bot-audio/blob/main/readfiles/demov1.gif)
 
-## Docker. 
+Панель администратора:
+
+<img src="readfiles/img.png" width="300px">
+<img src="readfiles/img_1.png" width="300px">
+
+## Docker 
 
 ```commandline
+docker build -t bot .
 
+docker run -e TOKEN= -e TOKEN2=  -e ADMIN_ID= -e DB_URI= bot
+
+docker-compose up
 ```
