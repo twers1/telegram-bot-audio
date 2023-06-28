@@ -2,10 +2,10 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeybo
 
 # Кнопочки бота
 main = ReplyKeyboardMarkup(resize_keyboard=True)
-main.add(KeyboardButton('🗣Хочу голосовое сообщение!'))
+main.add(KeyboardButton('🗣Хочу голосовое сообщение!'), KeyboardButton('✍️Хочу текстовое сообщение!'))
 
 main_admin = ReplyKeyboardMarkup(resize_keyboard=True)
-main_admin.add(KeyboardButton('🗣Хочу голосовое сообщение!'), KeyboardButton(text='Админ-панель'))
+main_admin.add(KeyboardButton('🗣Хочу голосовое сообщение!'), KeyboardButton('✍️Хочу текстовое сообщение!'), KeyboardButton(text='Админ-панель'))
 
 admin_panel = ReplyKeyboardMarkup(resize_keyboard=True)
 admin_panel.add(KeyboardButton('👱‍♂️Посмотреть статистику'))

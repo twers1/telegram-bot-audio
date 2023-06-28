@@ -1,6 +1,9 @@
 import asyncio
 import json
-import os
+import os, subprocess
+import speech_recognition as sr
+from google.cloud import speech
+
 from io import BytesIO
 
 from aiogram import types
@@ -43,6 +46,49 @@ async def converter_text_to_voice_en(text: str) -> BytesIO:
     bytes_file.seek(0)
     return bytes_file
 
+# Create the directory if it doesn't exist
+os.makedirs("temp", exist_ok=True)
+
+# Create an empty audio file if it doesn't exist
+audio_file_path = "temp/audio.ogg"
+if not os.path.exists(audio_file_path):
+    with open(audio_file_path, "wb") as file:
+        pass
+
+def remove_audio_files():
+    if os.path.exists("temp/audio.ogg"):
+        os.remove("temp/audio.ogg")
+    if os.path.exists("temp/audio.wav"):
+        os.remove("temp/audio.wav")
+
+
+def audio_to_text(audio_data):
+    LANG = 'ru'
+    audio_data_bytes = audio_data.read()  # Convert `_io.BytesIO` to bytes
+    with open("temp/audio.ogg", "wb") as file:
+        file.write(audio_data_bytes)
+
+    # Converting to WAV
+    process = subprocess.run(["ffmpeg", "-i", "temp/audio.ogg", "temp/audio.wav"])
+    if process.returncode != 0:
+        raise Exception("Something went wrong")
+
+    with sr.AudioFile("temp/audio.wav") as source:
+        r = sr.Recognizer()
+        audio = r.record(source)
+        try:
+            # Convert the audio file to text using Google Cloud Speech API
+            # Write the heard text to a text variable
+            audio_text = r.recognize_google(audio, language=LANG)
+            response = audio_text
+        except:
+            response = "Words not recognized. Please, try again!"
+
+    # Removing files after convertion to text
+    remove_audio_files()
+    return response
+
+r = sr.Recognizer()
 
 # Загружает данные с env переменной в json
 ADMIN_ID = json.loads(os.getenv('ADMIN_ID'))
@@ -74,14 +120,8 @@ async def convert_to(message: types.Message):
 
     @dp.message_handler()
     async def get_text(message: types.Message):
+        print('ку-ку я тут')
         user_text = message.text
-        # elif message.text == 'en':
-        #     await bot.send_message(message.chat.id, 'Type any text and I will convert it into a voice message')
-        #     print('Starting convert en...')
-        #     await bot.send_message(message.chat.id, 'Starting convert...')
-        #     voice = converter_text_to_voice_en(user_text)
-        #     await bot.send_voice(message.from_user.id, voice)
-
         user_id = message.from_user.id
         is_subbed = False
         for group_id in subscriptions.values():
@@ -158,3 +198,26 @@ async def check_subscribed(callback_query: CallbackQuery):
         await bot.answer_callback_query(callback_query.id, text="Вы подписаны на все каналы и просмотрели первые 10 постов!")
     else:
         await bot.answer_callback_query(callback_query.id, text="Вы еще не подписались на все каналы или не просмотрели первые 10 постов.")
+
+
+@dp.message_handler(content_types=types.ContentType.TEXT)
+async def start_get_text_message(message: types.Message):
+    if message.text == '✍️Хочу текстовое сообщение!':
+        print('Хочу текстовое сообщение!')
+        await message.answer('Пришли голосовое сообщение')
+
+@dp.message_handler(content_types=types.ContentType.VOICE)
+async def start_get_voice_message(message: types.Message):
+    if message.voice is None:
+        await message.reply("Голосовое сообщение не обнаружено.")
+        return
+
+    # Download the audio file sent by the user
+    file_info = await bot.get_file(message.voice.file_id)
+    audio_file = await bot.download_file(file_info.file_path)
+
+    # Converting speech to text
+    audio_text = audio_to_text(audio_file)
+
+    # Reply to the user with the converted text
+    await message.reply(audio_text)
