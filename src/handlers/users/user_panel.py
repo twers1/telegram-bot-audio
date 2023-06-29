@@ -200,24 +200,26 @@ async def check_subscribed(callback_query: CallbackQuery):
         await bot.answer_callback_query(callback_query.id, text="Вы еще не подписались на все каналы или не просмотрели первые 10 постов.")
 
 
-@dp.message_handler(content_types=types.ContentType.TEXT)
+@dp.message_handler(content_types=types.ContentType.TEXT, text="✍️Хочу текстовое сообщение!")
 async def start_get_text_message(message: types.Message):
     if message.text == '✍️Хочу текстовое сообщение!':
         print('Хочу текстовое сообщение!')
         await message.answer('Пришли голосовое сообщение')
 
-@dp.message_handler(content_types=types.ContentType.VOICE)
-async def start_get_voice_message(message: types.Message):
-    if message.voice is None:
-        await message.reply("Голосовое сообщение не обнаружено.")
-        return
+        @dp.message_handler(content_types=types.ContentType.VOICE)
+        async def start_get_voice_message(message: types.Message):
+            if message.voice is None:
+                await message.reply("Голосовое сообщение не обнаружено.")
+                return
 
-    # Download the audio file sent by the user
-    file_info = await bot.get_file(message.voice.file_id)
-    audio_file = await bot.download_file(file_info.file_path)
+            # Download the audio file sent by the user
+            file_info = await bot.get_file(message.voice.file_id)
+            audio_file = await bot.download_file(file_info.file_path)
 
-    # Converting speech to text
-    audio_text = audio_to_text(audio_file)
+            # Converting speech to text
+            audio_text = audio_to_text(audio_file)
 
-    # Reply to the user with the converted text
-    await message.reply(audio_text)
+            # Reply to the user with the converted text
+            await message.reply(audio_text)
+
+
