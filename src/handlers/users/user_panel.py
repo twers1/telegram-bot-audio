@@ -1,7 +1,6 @@
 import asyncio
 import json
 import os
-import subprocess
 
 import speech_recognition as sr
 
@@ -10,7 +9,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
 from src.handlers.users.user_functions import subscriptions, is_user_subscribed, converter_text_to_voice, \
-    voice_recognizer
+    voice_recognizer, show_loading_animation
 from src.keyboards.inline.choice_buttons import main, main_admin, keyboard_open, language_buttons
 from src.loader import bot, dp
 from src.states import VoiceRecognitionStates
@@ -137,7 +136,7 @@ async def check_subscribed(callback_query: CallbackQuery):
 async def start_get_text_message(message: types.Message):
     if message.text == '✍️Хочу текстовое сообщение!':
         print('Хочу текстовое сообщение!')
-        await message.answer('Пришли голосовое сообщение')
+        await message.answer('Пришли голосовое сообщение, а я его распознаю его в речь🗣')
 
         @dp.message_handler(content_types=types.ContentType.VOICE)
         async def voice_handler(message: types.Message, state: FSMContext):
@@ -147,7 +146,7 @@ async def start_get_text_message(message: types.Message):
 
             file_size = file_info.file_size
             if int(file_size) >= 715000:
-                await message.reply('Слишком большое голосовое сообщение! Извини')
+                await message.reply('Слишком большое голосовое сообщение!😔')
             else:
                 await file_info.download(destination='audio.ogg')
                 await VoiceRecognitionStates.WaitingForVoiceMessage.set()
@@ -159,11 +158,16 @@ async def buttons(call: types.CallbackQuery, state: FSMContext):
     await call.answer()
 
     if call.data == 'russian':
+        # Показ анимации загрузки перед обработкой голосового сообщения
+        await show_loading_animation(call.message)
+        await bot.send_message(call.from_user.id, 'Загрузка завершена.')
         text = voice_recognizer('ru_RU')
         await bot.send_message(call.from_user.id, text)
         os.remove('audio.wav')
         os.remove('audio.ogg')
     elif call.data == 'english':
+        await show_loading_animation(call.message)
+        await bot.send_message(call.from_user.id, 'Загрузка завершена.')
         text = voice_recognizer('en_EN')
         await bot.send_message(call.from_user.id, text)
         os.remove('audio.wav')

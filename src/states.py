@@ -6,5 +6,6 @@ class Links(StatesGroup):
     link = State()
 
 
+# Класс, содержащий состояние для голосовых сообщений, чтобы распознавать их
 class VoiceRecognitionStates(StatesGroup):
     WaitingForVoiceMessage = State()

@@ -1,3 +1,4 @@
+import asyncio
 import os
 import subprocess
 import speech_recognition as sr
@@ -48,4 +49,22 @@ def voice_recognizer(language):
         except:
             text = 'Слова не распознаны. Попробуйте еще раз!💔'
     return text
+
+
+# Функция для отображения анимации загрузки
+async def show_loading_animation(message):
+    # Отправка сообщения с анимацией загрузки
+    loading_message = await bot.send_message(message.chat.id, "Загрузка: 0%")
+
+    # Имитация процесса загрузки
+    for i in range(1, 101):
+        # Обновление процента загрузки в сообщении
+        await bot.edit_message_text(chat_id=message.chat.id, message_id=loading_message.message_id,
+                                    text=f"Загрузка: {i}%")
+
+        # Ожидание некоторого времени (в данном случае 0.1 секунды)
+        await asyncio.sleep(0.1)
+
+    # Удаление сообщения анимации загрузки
+    await bot.delete_message(message.chat.id, loading_message.message_id)
 
