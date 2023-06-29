@@ -70,23 +70,11 @@ async def get_users():
     return cursor_obj.fetchall()
 
 
-# async def remove_user_from_db(user_id):
-#     cursor_obj.execute("DELETE FROM users WHERE user_id=%s", (user_id,))
-#     con.commit()
-
-
 async def get_users_count():
     cursor_obj.execute("SELECT COUNT(*) FROM users")
     count = cursor_obj.fetchone()[0]
     print(f"Количество пользователей, зашедших в бота: {count}")
     return count
-
-
-# async def get_users_count_func():
-#     cursor_obj.execute("SELECT COUNT(*) FROM users WHERE used_voice = TRUE")
-#     count = cursor_obj.fetchone()[0]
-#     print(f"Количество пользователей, которые использовали функционал отправки голосовых сообщений: {count}")
-#     return count
 
 
 async def get_live_users():
@@ -137,7 +125,3 @@ async def get_users_current_time():
     current_users = len(active_users)
     print(f"Количество пользователей, которые сейчас в боте(15 min): {current_users}")
     return current_users
-
-
-
-
