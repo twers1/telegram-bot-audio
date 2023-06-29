@@ -1,4 +1,5 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+from aiogram import types
 
 # Кнопочки бота
 main = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -25,5 +26,13 @@ keyboard_open = InlineKeyboardMarkup().add(subscribe_to_channels0).add(subscribe
 
 quit_button = ReplyKeyboardMarkup(resize_keyboard=True)
 quit_button.add(KeyboardButton('Выйти'))
+
+
+async def language_buttons(message: types.Message):
+    keyboard = types.InlineKeyboardMarkup()
+    button_ru = types.InlineKeyboardButton(text='Русский', callback_data='russian')
+    button_eng = types.InlineKeyboardButton(text='Английский', callback_data='english')
+    keyboard.add(button_ru, button_eng)
+    await message.reply('Выберите язык для распознавания речи', reply_markup=keyboard)
 
 

@@ -1,15 +1,19 @@
 import asyncio
 import json
 import os
+import subprocess
 
 import speech_recognition as sr
 
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
-from src.handlers.users.user_functions import subscriptions, is_user_subscribed, converter_text_to_voice, audio_to_text
-from src.keyboards.inline.choice_buttons import main, main_admin, keyboard_open
+from src.handlers.users.user_functions import subscriptions, is_user_subscribed, converter_text_to_voice, \
+    voice_recognizer
+from src.keyboards.inline.choice_buttons import main, main_admin, keyboard_open, language_buttons
 from src.loader import bot, dp
+from src.states import VoiceRecognitionStates
 from src.utils.db_functions import add_users, add_users_func, get_links
 
 from datetime import datetime
@@ -136,17 +140,33 @@ async def start_get_text_message(message: types.Message):
         await message.answer('Пришли голосовое сообщение')
 
         @dp.message_handler(content_types=types.ContentType.VOICE)
-        async def start_get_voice_message(message: types.Message):
-            if message.voice is None:
-                await message.reply("Голосовое сообщение не обнаружено.")
-                return
+        async def voice_handler(message: types.Message, state: FSMContext):
+            file_id = message.voice.file_id
+            file_info = await bot.get_file(file_id)
+            file_path = file_info.file_path
 
-            # Download the audio file sent by the user
-            file_info = await bot.get_file(message.voice.file_id)
-            audio_file = await bot.download_file(file_info.file_path)
+            file_size = file_info.file_size
+            if int(file_size) >= 715000:
+                await message.reply('Слишком большое голосовое сообщение! Извини')
+            else:
+                await file_info.download(destination='audio.ogg')
+                await VoiceRecognitionStates.WaitingForVoiceMessage.set()
+                await language_buttons(message)
 
-            # Converting speech to text
-            audio_text = audio_to_text(audio_file)
 
-            # Reply to the user with the converted text
-            await message.reply(audio_text)
+@dp.callback_query_handler(lambda call: True, state=VoiceRecognitionStates.WaitingForVoiceMessage)
+async def buttons(call: types.CallbackQuery, state: FSMContext):
+    await call.answer()
+
+    if call.data == 'russian':
+        text = voice_recognizer('ru_RU')
+        await bot.send_message(call.from_user.id, text)
+        os.remove('audio.wav')
+        os.remove('audio.ogg')
+    elif call.data == 'english':
+        text = voice_recognizer('en_EN')
+        await bot.send_message(call.from_user.id, text)
+        os.remove('audio.wav')
+        os.remove('audio.ogg')
+
+    await state.finish()
