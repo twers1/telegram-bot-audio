@@ -56,8 +56,7 @@ def remove_audio_files():
 
 
 # Функция конвертации голосового сообщения в текст
-def audio_to_text(audio_data):
-    LANG = 'ru'
+def audio_to_text(audio_data, language: str = 'ru-RU'):
     audio_data_bytes = audio_data.read()  # Convert `_io.BytesIO` to bytes
     with open("temp/audio.ogg", "wb") as file:
         file.write(audio_data_bytes)
@@ -70,14 +69,9 @@ def audio_to_text(audio_data):
     with sr.AudioFile("temp/audio.wav") as source:
         r = sr.Recognizer()
         audio = r.record(source)
-        try:
-            # Преобразование аудиофайла в текст с помощью Google Cloud Speech API
-            # Запишите услышанный текст в текстовую переменную
-            audio_text = r.recognize_google(audio, language=LANG)
-            response = audio_text
-        except:
-            response = "Слова не распознаны. Попробуйте еще раз!💔"
-
-    # Удаление файлов после преобразования в текст
-    remove_audio_files()
-    return response
+        audio_text = r.recognize_google(audio)
+        response = audio_text
+        remove_audio_files()
+        return response
+        # except:
+        #     response = "Слова не распознаны. Попробуйте еще раз!💔"

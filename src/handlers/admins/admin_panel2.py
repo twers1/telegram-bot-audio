@@ -15,7 +15,7 @@ from src.utils.db_functions import get_users_count, get_inactive_users_count, ge
 ADMIN_ID = json.loads(os.getenv('ADMIN_ID'))
 
 
-# При нажатии /start
+# Стартовое меню. Проверка админ или нет
 @dp2.message_handler(commands='start')
 async def cmd_start(message: types.Message):
     print('Мы во втором боте')
@@ -31,18 +31,21 @@ async def statistics(message: types.Message):
     get_users_live = await get_live_users()
     get_users_cur_time = await get_users_current_time()
     await bot2.send_message(message.chat.id, f'На момент последней проверки: *{datetime.now()}* в боте:\n'
-                                            f'Живые: {get_users_live}\n'
-                                            f'Мертвые: {inactive_users_count}\n'
-                                            f'Суммарно проверено: {users_count}\n'
-                                            f'На текущий момент, в боте: *{get_users_cur_time}*', reply_markup=quit_button,
-                                            parse_mode='Markdown')
+                                             f'Живые: {get_users_live}\n'
+                                             f'Мертвые: {inactive_users_count}\n'
+                                             f'Суммарно проверено: {users_count}\n'
+                                             f'На текущий момент, в боте: *{get_users_cur_time}*',
+                            reply_markup=quit_button,
+                            parse_mode='Markdown')
 
 
+# Функция для выхода из статистики
 @dp2.message_handler(text="Выйти")
 async def quit_to_lobby(message: types.Message):
     await cmd_start(message)
 
 
+# Функция добавления ссылок в базу данных
 @dp2.message_handler(text="🔗Добавить ссылку")
 async def add_link(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
@@ -52,6 +55,7 @@ async def add_link(message: types.Message, state: FSMContext):
     await Links.first()
 
 
+# Продолжение добавления ссылки в базу данных
 @dp2.message_handler(state=Links.link)
 async def get_link(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
