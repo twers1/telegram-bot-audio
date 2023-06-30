@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from src.utils.connect_db import con, cursor_obj
 
 
-# Table users
+# Создание таблицы пользователей
 async def create_table():
     cursor_obj.execute("""CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
@@ -18,6 +18,7 @@ async def create_table():
     con.commit()
 
 
+# Создание таблицы с ссылками
 async def create_table_link():
     cursor_obj.execute("""CREATE TABLE IF NOT EXISTS links (
     link TEXT,
@@ -26,18 +27,21 @@ async def create_table_link():
     con.commit()
 
 
+# Функция добавление ссылки в базу данных
 async def add_link_to_db(link):
     cursor_obj.execute("INSERT INTO links (link) VALUES (%s)", (link,))
 
     con.commit()
 
 
+# Функция получения ссылок из базы данных
 async def get_links():
     cursor_obj.execute("""SELECT link from links;""")
     links = cursor_obj.fetchall()
     return [link[0] for link in links]
 
 
+# Функция добавления пользователя
 async def add_users(user_id, username, start_time):
     # если пользователя нет в базе данных, добавляем его
     cursor_obj.execute("""
@@ -50,6 +54,7 @@ async def add_users(user_id, username, start_time):
     con.commit()
 
 
+# Функция добавление столбца user_voice (не используется)
 async def add_users_func(user_id, username, used_voice=False):
     # проверяем наличие пользователя в базе данных
     cursor_obj.execute("""SELECT * FROM users WHERE user_id = %s""", (user_id,))
@@ -65,11 +70,13 @@ async def add_users_func(user_id, username, used_voice=False):
         con.commit()
 
 
+# Функция получения всех пользователей
 async def get_users():
     cursor_obj.execute("""SELECT user_id, username, subscribers FROM users""")
     return cursor_obj.fetchall()
 
 
+# Функция получения количества всех пользователей, которые зашли в бота
 async def get_users_count():
     cursor_obj.execute("SELECT COUNT(*) FROM users")
     count = cursor_obj.fetchone()[0]
@@ -77,6 +84,7 @@ async def get_users_count():
     return count
 
 
+# Функция получения живых пользователей
 async def get_live_users():
     # Определяем период времени, в течение которого пользователь должен был быть активным, чтобы считаться активным
     active_period = 1  # дни
@@ -91,6 +99,7 @@ async def get_live_users():
     return live_users
 
 
+# Функция получения мертвых пользователей
 async def get_inactive_users_count():
     # Определяем период времени, в течение которого пользователь должен был быть активным, чтобы считаться активным
     active_period = 1 # дни
@@ -113,6 +122,7 @@ async def get_inactive_users_count():
     return count
 
 
+# Функция получения текущих пользователей, которые сейчас в боте
 async def get_users_current_time():
     # Определяем период времени, в течение которого пользователь должен был быть активным, чтобы считаться активным
     active_period = 15  # минуты

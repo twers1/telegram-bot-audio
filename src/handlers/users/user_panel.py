@@ -153,6 +153,7 @@ async def start_get_text_message(message: types.Message):
                 await language_buttons(message)
 
 
+# Функция выборки языка и продолжение конвертации голосового сообщения в текст
 @dp.callback_query_handler(lambda call: True, state=VoiceRecognitionStates.WaitingForVoiceMessage)
 async def buttons(call: types.CallbackQuery, state: FSMContext):
     await call.answer()
@@ -160,14 +161,15 @@ async def buttons(call: types.CallbackQuery, state: FSMContext):
     if call.data == 'russian':
         # Показ анимации загрузки перед обработкой голосового сообщения
         await show_loading_animation(call.message)
-        await bot.send_message(call.from_user.id, 'Загрузка завершена.')
+        await bot.send_message(call.from_user.id, 'Загрузка завершена☺')
+        # await bot.send_message(call.from_user.id, 'Подождите еще немного...')
         text = voice_recognizer('ru_RU')
         await bot.send_message(call.from_user.id, text)
         os.remove('audio.wav')
         os.remove('audio.ogg')
     elif call.data == 'english':
         await show_loading_animation(call.message)
-        await bot.send_message(call.from_user.id, 'Загрузка завершена.')
+        await bot.send_message(call.from_user.id, 'Загрузка завершена☺')
         text = voice_recognizer('en_EN')
         await bot.send_message(call.from_user.id, text)
         os.remove('audio.wav')

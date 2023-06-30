@@ -27,6 +27,7 @@ quit_button = ReplyKeyboardMarkup(resize_keyboard=True)
 quit_button.add(KeyboardButton('Выйти'))
 
 
+# Функция, содержащая две кнопки для конвертации
 async def language_buttons(message: types.Message):
     keyboard = types.InlineKeyboardMarkup()
     button_ru = types.InlineKeyboardButton(text='Русский 🇷🇺', callback_data='russian')

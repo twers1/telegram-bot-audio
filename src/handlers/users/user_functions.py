@@ -39,6 +39,7 @@ async def converter_text_to_voice_en(text: str) -> BytesIO:
     return bytes_file
 
 
+# Функция для конвертации голосового сообщения в текст
 def voice_recognizer(language):
     subprocess.run(['ffmpeg', '-i', 'audio.ogg', 'audio.wav', '-y'])
     r = sr.Recognizer()
