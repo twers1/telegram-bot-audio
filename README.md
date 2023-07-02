@@ -6,11 +6,14 @@
 python3 pip install -r requirements.txt
 
 python3 main.py 
+
+python3 admin.py
 ```
 
 ## Functions 
 
 - converting text into a voice message 
+- converting a voica message to text 
 - channel subscription verification 
 - viewing statistics 
 - language selection (Russian, English)
@@ -19,12 +22,25 @@ python3 main.py
 
 - Python. Aiogram
 - PostgreSQL
+- Docker
 
 ## Demo
 
 User panel: 
 
+Text-to-speech
+
 ![](https://github.com/twers1/telegram-bot-audio/blob/main/readfiles/demov1.gif)
+
+Speech-to-text
+
+![](https://github.com/twers1/telegram-bot-audio/blob/main/readfiles/gif2.gif)
+
+
+If you are not subscribed: 
+
+<img src="readfiles/img_2.png" width="300px">
+
 
 Admin panel: 
 
@@ -41,7 +57,13 @@ docker run -e TOKEN= -e TOKEN2=  -e ADMIN_ID= -e DB_URI= bot
 docker-compose up
 ```
 
+## Support 
 
+If you want to support me, click "🌟" on this project😊
+
+### Further ideas
+
+Add a "Settings" button with language selection, so that there is a translation of buttons, functions, etc.
 
 # Бот, занимающийся конвертацией текста в голосовое сообщение
 
@@ -51,11 +73,14 @@ docker-compose up
 python3 pip install -r requirements.txt
 
 python3 main.py 
+
+python3 admin.py
 ```
 
 ## Функции 
 
 - конвертация текста в голосовое сообщение 
+- конвертация голосового сообщения в текст
 - проверка подписки на канал 
 - просмотр статистики 
 - выборка языка(русский, английский)
@@ -64,13 +89,23 @@ python3 main.py
 
 - Python. Aiogram
 - PostreSQL
-
+- Docker
 
 ## Демонстрация 
 
 Панель пользователя: 
 
+Text-to-speech
+
 ![](https://github.com/twers1/telegram-bot-audio/blob/main/readfiles/demov1.gif)
+
+Speech-to-text
+
+![](https://github.com/twers1/telegram-bot-audio/blob/main/readfiles/gif2.gif)
+
+Если не подписан: 
+
+<img src="readfiles/img_2.png" width="300px">
 
 Панель администратора:
 
@@ -86,3 +121,11 @@ docker run -e TOKEN= -e TOKEN2=  -e ADMIN_ID= -e DB_URI= bot
 
 docker-compose up
 ```
+
+## Поддержка
+
+Если хотите поддержать меня, то нажмите "🌟" на этот проект😊
+
+### Дальнейшие идеи
+
+Добавить кнопку "Настройки" с выбором языка, чтобы был перевод кнопок, функций и тому подобное
