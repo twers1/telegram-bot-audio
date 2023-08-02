@@ -161,7 +161,7 @@ async def buttons(call: types.CallbackQuery, state: FSMContext):
     if call.data == 'russian':
         # Показ анимации загрузки перед обработкой голосового сообщения
         await show_loading_animation(call.message)
-        await bot.send_message(call.from_user.id, 'Загрузка завершена☺')
+        # await bot.send_message(call.from_user.id, 'Загрузка завершена☺')
         text = voice_recognizer('ru_RU')
         await bot.send_message(call.from_user.id, text)
         os.remove('audio.wav')

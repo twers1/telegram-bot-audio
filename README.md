@@ -1,4 +1,15 @@
-# A bot that converts text into a voice message
+
+<div align="center">
+<img alt="Static Badge" src="https://img.shields.io/badge/docker-support-grey">
+<img alt="GitHub" src="https://img.shields.io/github/license/twers1/telegram-bot-audio">
+<img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/twers1/telegram-bot-audio">
+<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/twers1/telegram-bot-audio">
+<img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/aiogram?logo=aiogram&label=aiogram">
+<img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/twers1/telegram-bot-audio">
+
+
+<p>A bot that converts text into a voice message</p>
+</div>
 
 ## How to install and start? 
 
